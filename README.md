@@ -4,6 +4,16 @@ English | [简体中文](README_zh.md)
 
 PonWrt is based on [ImmortalWrt](https://github.com/immortalwrt/immortalwrt) and adds support for Airoha AN7581 and AN7583 PON devices.
 
+## ⚠️ Disclaimer
+
+PonWrt is an open-source firmware project intended for research and development.
+
+Flashing firmware or modifying PON-related settings involves risks and may result in boot failure, loss of configuration or device-specific data, or failure to register with the PON network. Please back up the original firmware and device data before making any changes.
+
+Users are responsible for ensuring that their use complies with applicable laws, regulations, and network operator requirements. Do not use this project for unauthorized network access, impersonating or cloning another device's identity, or interfering with operator networks.
+
+The authors and contributors are not responsible for device damage, network service disruption, or other consequences resulting from flashing, configuring, or using this project.
+
 ## Supported devices
 
 | SoC | Device | Profile | Stock calibration / identity data |
