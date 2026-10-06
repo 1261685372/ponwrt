@@ -210,7 +210,8 @@ define Device/fiberhome_hg5585f-common
   # PON and MT7916D read per-device calibration from factory UBI NVMEM cells.
   DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-leds-gpio kmod-usb3 \
     kmod-airoha-paged-bosa kmod-airoha-xpon airoha-ponctl airoha-pond \
-	 kmod-mt7915e kmod-mt7916-firmware wpad-openssl \
+	 kmod-mt7915e kmod-mt7916-firmware airoha-en7581-clanker-mt7916-npu \
+	 wpad-openssl \
 	 fitblk nand-utils ubi-utils $(AIROHA_USB_STORAGE_PACKAGES)
 endef
 
@@ -293,8 +294,8 @@ define Device/znxt_zn515xg-d
   DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-leds-gpio \
     kmod-usb3 kmod-usb-ledtrig-usbport kmod-phy-airoha-en8811h \
     kmod-airoha-en7572 kmod-airoha-xpon airoha-ponctl airoha-pond \
-    kmod-mt7915e kmod-mt7916-firmware znxt-zn515-mt7916-eeprom \
-    wpad-openssl \
+    kmod-mt7915e kmod-mt7916-firmware airoha-en7581-clanker-mt7916-npu \
+    znxt-zn515-mt7916-eeprom wpad-openssl \
     nand-utils ubi-utils $(AIROHA_USB_STORAGE_PACKAGES)
   DEVICE_PACKAGES += fitblk
 endef

@@ -5,6 +5,7 @@
 /memreserve/ 0x80000000 0x200000;
 
 #include "an7581-znxt-zn50xg-d-common.dtsi"
+#include "an7581-npu-mt7916.dtsi"
 
 / {
 	model = "ZNXT ZN515XG-D";
@@ -122,6 +123,9 @@
 			mediatek,eeprom-merge-otp;
 			airoha,npu = <&npu>;
 			airoha,eth = <&eth>;
+			/* Clanker Kite mapping for the MT7916D wiring. */
+			/* AN7581 legacy port 0 = MAC1/main, port 1 = MAC0/HIF2. */
+			airoha,npu-pcie-port-type = <3>;
 
 			band@0 {
 				reg = <0>;
