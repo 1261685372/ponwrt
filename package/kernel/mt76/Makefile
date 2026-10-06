@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mt76
-PKG_RELEASE=51
+PKG_RELEASE=52
 
 PKG_LICENSE:=BSD-3-Clause-Clear
 PKG_LICENSE_FILES:=
@@ -482,7 +482,11 @@ ifdef CONFIG_PACKAGE_kmod-mt7663u
 endif
 ifdef CONFIG_PACKAGE_kmod-mt7915e
   PKG_MAKE_FLAGS += CONFIG_MT7915E=m
-  ifdef CONFIG_TARGET_airoha_an7581
+  # Both an7581 and an7583 run the airoha NPU driver. The Kite mt7915 glue
+  # patches reference NPU state unconditionally, so build the NPU paths for
+  # every airoha subtarget. They stay dormant without the module parameters
+  # and without an "airoha,npu" DTS phandle.
+  ifdef CONFIG_TARGET_airoha
     PKG_MAKE_FLAGS += CONFIG_MT76_NPU=y
     PKG_MAKE_FLAGS += CONFIG_MT7915_NPU=y
     NOSTDINC_FLAGS += -DCONFIG_MT76_NPU
@@ -513,7 +517,7 @@ ifdef CONFIG_PACKAGE_kmod-mt7921e
 endif
 ifdef CONFIG_PACKAGE_kmod-mt7996e
   PKG_MAKE_FLAGS += CONFIG_MT7996E=m
-  ifdef CONFIG_TARGET_airoha_an7581
+  ifdef CONFIG_TARGET_airoha
     PKG_MAKE_FLAGS += CONFIG_MT76_NPU=y
     PKG_MAKE_FLAGS += CONFIG_MT7996_NPU=y
     NOSTDINC_FLAGS += -DCONFIG_MT76_NPU
