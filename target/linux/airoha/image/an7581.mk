@@ -266,7 +266,6 @@ TARGET_DEVICES += fiberhome_hg5585f-cu-usb-sfp
 define Device/znxt_zn50xg-d-common
   DEVICE_VENDOR := ZNXT
   DEVICE_VARIANT := (UBI)
-  DEVICE_DTS_CONFIG := config-1
   # 0x8a000000 follows NPU/QDMA reserved memory and holds recovery decompression.
   KERNEL_LOADADDR := 0x8a000000
   BLOCKSIZE := 128k
