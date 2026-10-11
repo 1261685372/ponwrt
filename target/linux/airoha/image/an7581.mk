@@ -266,6 +266,7 @@ TARGET_DEVICES += fiberhome_hg5585f-cu-usb-sfp
 define Device/znxt_zn50xg-d-common
   DEVICE_VENDOR := ZNXT
   DEVICE_VARIANT := (UBI)
+  DEVICE_DTS_CONFIG := config-1
   # 0x8a000000 follows NPU/QDMA reserved memory and holds recovery decompression.
   KERNEL_LOADADDR := 0x8a000000
   BLOCKSIZE := 128k
@@ -376,12 +377,23 @@ endef
 define Device/nokia_xg-040g-tf-common
   $(call Device/nokia_xg-040g-md-common)
   DEVICE_MODEL := XG-040G-TF
-  DEVICE_PACKAGES += -kmod-regulator-userspace-consumer \
-    -kmod-usb-ledtrig-usbport -kmod-usb3 \
-    $(addprefix -,$(AIROHA_USB_STORAGE_PACKAGES))
 endef
 
 define Device/nokia_xg-040g-md-ubi-images
+  UBOOTENV_IN_UBI := 1
+  KERNEL_IN_UBI := 1
+  KERNEL := kernel-bin | gzip
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb with-initrd | pad-to 128k
+  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+  IMAGES := sysupgrade.itb
+  IMAGE/sysupgrade.itb := append-kernel | \
+	fit gzip $$(KDIR)/image-$$(DEVICE_DTS).dtb external-static-with-rootfs | \
+	append-metadata
+  DEVICE_PACKAGES += fitblk
+endef
+
+define Device/nokia_xg-040g-tf-ubi-images
   UBOOTENV_IN_UBI := 1
   KERNEL_IN_UBI := 1
   KERNEL := kernel-bin | gzip
@@ -404,6 +416,15 @@ define Device/nokia_xg-040g-md-ubi
 endef
 TARGET_DEVICES += nokia_xg-040g-md-ubi
 
+define Device/nokia_xg-040g-tf-ubi
+  $(call Device/nokia_xg-040g-tf-common)
+  DEVICE_VARIANT := (UBI)
+  DEVICE_DTS := an7581-nokia_xg-040g-tf-ubi
+  SUPPORTED_DEVICES += nokia,xg-040g-tf-ubi-usb-sfp
+  $(call Device/nokia_xg-040g-tf-ubi-images)
+endef
+TARGET_DEVICES += nokia_xg-040g-tf-ubi
+
 define Device/nokia_xg-040g-md-ubi-usb-sfp
   $(call Device/nokia_xg-040g-md-common)
   DEVICE_VARIANT := (UBI-USB-SFP)
@@ -412,6 +433,15 @@ define Device/nokia_xg-040g-md-ubi-usb-sfp
   $(call Device/nokia_xg-040g-md-ubi-images)
 endef
 TARGET_DEVICES += nokia_xg-040g-md-ubi-usb-sfp
+
+define Device/nokia_xg-040g-tf-ubi-usb-sfp
+  $(call Device/nokia_xg-040g-tf-common)
+  DEVICE_VARIANT := (UBI-USB-SFP)
+  DEVICE_DTS := an7581-nokia_xg-040g-tf-ubi-usb-sfp
+  SUPPORTED_DEVICES += nokia,xg-040g-tf-ubi
+  $(call Device/nokia_xg-040g-tf-ubi-images)
+endef
+TARGET_DEVICES += nokia_xg-040g-tf-ubi-usb-sfp
 
 define Device/quantum_q1000k-ubi
   DEVICE_VENDOR := Quantum Fiber
@@ -443,21 +473,3 @@ define Device/quantum_q1000k-ubi
   SOC := an7581
 endef
 TARGET_DEVICES += quantum_q1000k-ubi
-
-define Device/nokia_xg-040g-tf-ubi
-  $(call Device/nokia_xg-040g-tf-common)
-  DEVICE_VARIANT := (UBI)
-  DEVICE_DTS := an7581-nokia_xg-040g-tf-ubi
-  UBOOTENV_IN_UBI := 1
-  KERNEL_IN_UBI := 1
-  KERNEL := kernel-bin | gzip
-  KERNEL_INITRAMFS := kernel-bin | lzma | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 128k
-  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
-  IMAGES := sysupgrade.itb
-  IMAGE/sysupgrade.itb := append-kernel | \
-	fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | \
-	append-metadata
-  DEVICE_PACKAGES += fitblk
-endef
-TARGET_DEVICES += nokia_xg-040g-tf-ubi
