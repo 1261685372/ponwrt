@@ -8,44 +8,11 @@
 	compatible = "nokia,xg-040g-md-ubi", "airoha,an7581",
 		     "airoha,en7581";
 	variant = "10g-sfp";
-
-	sfp0: sfp {
-		compatible = "sff,sfp";
-
-		i2c-bus = <&sfp_i2c>;
-
-		maximum-power-milliwatt = <3000>;
-	};
-
-	/*
-	 * The external MDIO pins (GPIO1 = MDC, GPIO2 = MDIO) are only used
-	 * by the EN8811H PHY, which this variant does not have. Reuse them
-	 * as a bit-banged I2C bus for the SFP EEPROM.
-	 */
-	sfp_i2c: i2c-sfp {
-		compatible = "i2c-gpio";
-
-		sda-gpios = <&en7581_pinctrl 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-		scl-gpios = <&en7581_pinctrl 1 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
-
-		#address-cells = <1>;
-		#size-cells = <0>;
-	};
 };
 
+/* The EN8811H 2.5G PHY is not populated on this variant. */
 &mdio {
 	/delete-node/ ethernet-phy@f;
-};
-
-/*
- * Drop the external MDIO pinmux so GPIO1/GPIO2 are usable by i2c-gpio.
- * The switch PHYs are accessed through the internal MDIO bus and do not
- * need the external pins.
- */
-&switch {
-	/delete-property/ pinctrl-names;
-	/delete-property/ pinctrl-0;
 };
 
 &eth_pcs {
@@ -61,13 +28,24 @@
 	#size-cells = <0>;
 	status = "okay";
 
+	/*
+	 * 10G SFP cage wired directly to the Ethernet SerDes (NBQ0).
+	 *
+	 * No SFP EEPROM I2C is available: the SoC MDIO pins (GPIO1/GPIO2)
+	 * are hard-connected to the internal switch MDIO bus and cannot be
+	 * reused as a bit-banged I2C bus, and no other I2C master reaches
+	 * the cage. The link is therefore brought up by the PCS using
+	 * in-band status at a fixed 10GBASE-R rate. Only modules that
+	 * present a 10GBASE-R (or compatible) SerDes signal will link
+	 * (10G AOC/DAC/optics, 10GBASE-T copper modules); 1G/2.5G copper
+	 * SFP modules that drive SGMII/2500BASE-X are not supported.
+	 */
 	lan_10g: ethernet-port@0 {
 		compatible = "airoha,eth-port";
 		reg = <0>;
 		managed = "in-band-status";
 		pcs-handle = <&eth_pcs>;
 		phy-mode = "10gbase-r";
-		sfp = <&sfp0>;
 		nvmem-cell-names = "mac-address";
 		nvmem-cells = <&macaddr_factory_3e 0>;
 		openwrt,netdev-name = "lan1";

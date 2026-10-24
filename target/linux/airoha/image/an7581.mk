@@ -395,8 +395,7 @@ define Device/nokia_xg-040g-md-ubi-10g-sfp
   $(call Device/nokia_xg-040g-md-common)
   DEVICE_VARIANT := (UBI-10G-SFP)
   DEVICE_DTS := an7581-nokia_xg-040g-md-ubi-10g-sfp
-  DEVICE_PACKAGES += -kmod-phy-airoha-en8811h kmod-i2c-gpio kmod-sfp \
-	kmod-phy-marvell-10g kmod-phy-aquantia kmod-phy-realtek kmod-phy-marvell
+  DEVICE_PACKAGES += -kmod-phy-airoha-en8811h
   SUPPORTED_DEVICES += nokia,xg-040g-md-ubi
   $(call Device/nokia_xg-040g-md-ubi-images)
 endef
