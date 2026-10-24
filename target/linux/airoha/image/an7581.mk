@@ -391,6 +391,17 @@ define Device/nokia_xg-040g-md-ubi-usb-sfp
 endef
 TARGET_DEVICES += nokia_xg-040g-md-ubi-usb-sfp
 
+define Device/nokia_xg-040g-md-ubi-10g-sfp
+  $(call Device/nokia_xg-040g-md-common)
+  DEVICE_VARIANT := (UBI-10G-SFP)
+  DEVICE_DTS := an7581-nokia_xg-040g-md-ubi-10g-sfp
+  DEVICE_PACKAGES += -kmod-phy-airoha-en8811h kmod-i2c-gpio kmod-sfp \
+	kmod-phy-marvell-10g kmod-phy-aquantia kmod-phy-realtek kmod-phy-marvell
+  SUPPORTED_DEVICES += nokia,xg-040g-md-ubi
+  $(call Device/nokia_xg-040g-md-ubi-images)
+endef
+TARGET_DEVICES += nokia_xg-040g-md-ubi-10g-sfp
+
 define Device/quantum_q1000k-ubi
   DEVICE_VENDOR := Quantum Fiber
   DEVICE_MODEL := Q1000K
